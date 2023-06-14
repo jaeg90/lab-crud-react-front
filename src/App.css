@@ -1,0 +1,30 @@
+nav a {
+  color: black;
+  margin-right: 8px;
+}
+a:hover {
+  color: gray;
+}
+
+a.active {
+  color: green;
+}
+
+a.active:hover {
+  color: gray;
+}
+
+.movie-list {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 32px;
+  flex-wrap: wrap;
+}
+
+.movie-item {
+  border: 2px solid black;
+  border-radius: 2px;
+  padding: 16px;
+  width: 28%;
+}
