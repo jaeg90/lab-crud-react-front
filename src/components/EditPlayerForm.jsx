@@ -2,74 +2,104 @@ import {
   Button,
   FormControl,
   FormLabel,
+  HStack,
   Input,
   ModalBody,
   ModalCloseButton,
   ModalContent,
   ModalFooter,
   ModalHeader,
+  Radio,
+  RadioGroup,
   Select,
 } from "@chakra-ui/react";
 import { useState } from "react";
 
-import todoService from "../services/todo.service";
+import playerService from "../services/players.service";
 
-export default function EditTodoForm({ todo: { title, description, dueDate, priority, _id }, onClose, getPlayers }) {
+export default function EditPlayerForm({ player: { firstName, lastName, gender, country, _id }, onClose, getPlayer }) {
+  const [loading, setLoading] = useState(false);
   const [data, setData] = useState({
-    title,
-    description,
-    dueDate,
-    priority,
+    firstName,
+    lastName,
+    gender,
+    country,
+    federated: true,
   });
 
-  const handleChange = (e) => {
+  const handleChange = (name) => (value) => {
+    let updatedValue = value;
+    if (typeof value === "object") {
+      updatedValue = value.target.value;
+    }
+
+    if (updatedValue === "true") {
+      updatedValue = true;
+    }
+    if (updatedValue === "false") {
+      updatedValue = false;
+    }
+
     setData({
       ...data,
-      [e.target.name]: e.target.value,
+      [name]: updatedValue,
     });
+    //cleanInputs();
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
     try {
-      await todoService.edit(_id, data);
-      getPlayers();
+      await playerService.edit(_id, data);
+      getPlayer();
       onClose();
+      setLoading(false);
     } catch (error) {
       console.log(error);
+      setLoading(false);
     }
   };
 
   return (
     <ModalContent as="form" onSubmit={handleSubmit}>
-      <ModalHeader>Editar todo</ModalHeader>
+      <ModalHeader>Editar player</ModalHeader>
       <ModalCloseButton />
       <ModalBody>
         <FormControl>
           <FormLabel>First Name</FormLabel>
-          <Input type="text" name={"firstName"} value={data.firstName} onChange={handleChange} />
+          <Input type="text" name={"firstName"} value={data.firstName} onChange={handleChange("firstName")} />
         </FormControl>
         <FormControl mt="12px">
           <FormLabel>Last Name</FormLabel>
-          <Input type="text" name={"lastName"} value={data.lastName} onChange={handleChange} />
+          <Input type="text" name={"lastName"} value={data.lastName} onChange={handleChange("lastName")} />
         </FormControl>
         <FormControl mt="12px">
           <FormLabel>Gender</FormLabel>
-          <Select name="gender" value={data.gender} placeholder="Select your gender..." onChange={handleChange}>
+          <Select
+            name={"gender"}
+            value={data.gender}
+            placeholder="Select your gender..."
+            onChange={handleChange("gender")}
+          >
             <option value="MAN">Man</option>
             <option value="WOMAN">Woman</option>
           </Select>
         </FormControl>
         <FormControl mt="12px">
           <FormLabel>Country</FormLabel>
-          <Input type="text" name={"country"} value={data.country} onChange={handleChange} />
+          <Input type="text" name={"country"} value={data.country} onChange={handleChange("country")} />
         </FormControl>
         <FormControl as="fieldset">
           <FormLabel>Federated?</FormLabel>
-          <RadioGroup defaultValue="true" name="federated" value={data.federated} onChange={handleChange}>
+          <RadioGroup defaultValue={true} onChange={handleChange("federated")} value={data.federated}>
             <HStack spacing="24px">
-              <Radio value="true">Yes</Radio>
-              <Radio value="false">No</Radio>
+              <Radio name="federated" value={true}>
+                Yes
+              </Radio>
+              <Radio name="federated" value={false}>
+                No
+              </Radio>
             </HStack>
           </RadioGroup>
         </FormControl>
