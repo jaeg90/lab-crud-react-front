@@ -1,10 +1,12 @@
 import { Box, Spinner, Heading, Text, Center, Modal, ModalOverlay, useDisclosure, Button } from "@chakra-ui/react";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import Player from "../components/Player";
 import CreatePlayerForm from "../components/CreatePlayerForm";
 import playerService from "../services/players.service";
+import { AuthContext } from "../context/auth.context";
 
 function HomePage() {
+  const { logout } = useContext(AuthContext);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [players, setPlayers] = useState(null);
   useEffect(() => {
@@ -33,11 +35,12 @@ function HomePage() {
     return players.map((player) => <Player deletePlayer={deletePlayer} key={player._id} {...player} />);
   };
 
-  console.log(players);
-
   return (
     <Box as="section">
       <Heading textAlign={"center"}>Golf Player App</Heading>
+      <Heading textAlign={"center"}>
+        Todo App <Button onClick={logout}>Logout</Button>
+      </Heading>
       {players && (
         <Center mt="32px">
           <Button onClick={onOpen}>Añadir Player</Button>

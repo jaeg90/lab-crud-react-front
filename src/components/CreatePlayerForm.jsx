@@ -37,7 +37,6 @@ export default function CreatePlayerForm({ getPlayers, onClose }) {
       ...data,
       [name]: updatedValue,
     });
-    //cleanInputs();
   };
 
   const handleSubmit = async (e) => {
